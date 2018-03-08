@@ -1,0 +1,105 @@
+.page-container {
+	height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+.content-container {
+	display:flex;
+    justify-content:center;
+    align-items:center;
+    width:100%;
+    height:100%;
+}
+#page-bg {
+		height: 100%;
+	    width: 100%;
+	    top: 0;
+	    left: 0;
+	    background-image: url(../img/coffee-shop.jpg);
+	    background-repeat: no-repeat;
+	    background-attachment: fixed;
+	    background-position: center; 
+	    background-size: cover;
+	    position: absolute;
+	    -webkit-filter: grayscale(50%) blur(3px); /* Safari 6.0 - 9.0 */
+	    filter: grayscale(50%) blur(3px);
+	    z-index: -1;
+}
+
+.title {
+	text-align: center;
+    font-family: 'Coiny', sans-serif;
+	position: relative;
+	color: #f7f7f7;
+	font-size: 90px;
+	display: block;
+}
+
+form.login-form {
+	text-align: center;
+	font-family: 'Lato', sans-serif;
+	position: relative;
+	color: #f7f7f7;
+	font-size: 30px;
+	display: block;
+}
+/* Bordered form */
+form {
+    /*border: 3px solid #f1f1f1;*/
+    background: rgba(212, 212, 212, 0.4);
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+/* Full-width inputs */
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+    background-color: #55efc4;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Add a hover effect for buttons */
+button:hover {
+    opacity: 0.8;
+}
+
+label.remember {
+	font-size: 25px;
+}
+
+/* Extra style for the cancel button (red) */
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #ff7675;
+}
+
+/* Add padding to containers */
+.container {
+    padding: 16px;
+}
+
+/* The "Forgot password" text */
+span.psw {
+    float: right;
+    padding-top: 1em;
+}
+span.psw a {
+	color: #74b9ff;
+}
