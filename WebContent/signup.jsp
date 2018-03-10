@@ -54,7 +54,7 @@
 						</div>
 
 						<div class="container">
-							<a href="login.jsp"><button type="button" class="loginbtn">Already a user? Login</button></a>
+							<a href="index.jsp"><button type="button" class="loginbtn">Already a user? Login</button></a>
 							<br>
 						</div>
 					</form> 
