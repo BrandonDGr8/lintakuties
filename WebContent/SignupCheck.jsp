@@ -28,13 +28,16 @@ try {
 	ps.setString(4, twitHandle);
 	ps.setString(5, instaHandle);
 	ps.setString(6, fbId);
-	int i = ps.executeUpdate();
-	if (i > 0) {
+	try {
+		ps.executeUpdate();
 		session.setAttribute("username", username);
 		response.sendRedirect("success.jsp");
-	} else {
-		response.sendRedirect("error.html");
+	} catch (Exception e) {
+		request.setAttribute("error","Username already taken");
+		RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
+		rd.include(request, response);
 	}
+		
 } catch (Exception e) {
 	e.printStackTrace();
 }
