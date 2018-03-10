@@ -25,15 +25,15 @@
 					%>
 					 <form class="signup-form" action="SignupCheck.jsp">
 						<div class="container">
-							<label for="fullname"><b>Full Name</b></label>
+							<label for="fullname"><b>Full Name (Required)</b></label>
 							<br>
 							<input type="text" placeholder="Enter full name" name="fullname" required>
 							<br>
-							<label for="uname"><b>Username</b></label>
+							<label for="uname"><b>Username (Required)</b></label>
 							<br>
 							<input type="text" placeholder="Enter Username" name="uname" required>
 							<br>
-							<label for="psw"><b>Password</b></label>
+							<label for="psw"><b>Password (Required)</b></label>
 							<br>
 							<input type="password" placeholder="Enter Password" name="psw" required>
 							<br>

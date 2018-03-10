@@ -42,8 +42,6 @@
 
 						<div class="container">
 							<a href="signup.jsp"><button type="button" class="signupbtn">Sign Up</button></a>
-							<br>
-							<span class="psw">Forgot <a href="#">password?</a></span>
 						</div>
 					</form> 
 				</div>
