@@ -25,7 +25,9 @@ try {
 		session.setAttribute("username", username);
 		response.sendRedirect("success.jsp");
 	} else {
-		response.sendRedirect("error.html");
+		request.setAttribute("error","Invalid Username or Password");
+		RequestDispatcher rd=request.getRequestDispatcher("/login.jsp");            
+		rd.include(request, response);
 	}
 } catch (Exception e) {
 	e.printStackTrace();

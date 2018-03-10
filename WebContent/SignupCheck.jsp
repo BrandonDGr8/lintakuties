@@ -31,7 +31,7 @@ try {
 	int i = ps.executeUpdate();
 	if (i > 0) {
 		session.setAttribute("username", username);
-		response.sendRedirect("success.html");
+		response.sendRedirect("success.jsp");
 	} else {
 		response.sendRedirect("error.html");
 	}
