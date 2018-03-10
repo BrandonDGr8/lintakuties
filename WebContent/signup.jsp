@@ -56,7 +56,6 @@
 						<div class="container">
 							<a href="login.jsp"><button type="button" class="loginbtn">Already a user? Login</button></a>
 							<br>
-							<span class="psw">Forgot <a href="#">password?</a></span>
 						</div>
 					</form> 
 				</div>
