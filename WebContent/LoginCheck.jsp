@@ -23,7 +23,7 @@ try {
 	ResultSet rs = ps.executeQuery();
 	if (rs.next()) {
 		session.setAttribute("username", username);
-		response.sendRedirect("success.html");
+		response.sendRedirect("success.jsp");
 	} else {
 		response.sendRedirect("error.html");
 	}
