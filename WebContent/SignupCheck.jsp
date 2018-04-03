@@ -31,7 +31,7 @@ try {
 	try {
 		ps.executeUpdate();
 		session.setAttribute("username", username);
-		response.sendRedirect("success.jsp");
+		response.sendRedirect("success.html");
 	} catch (Exception e) {
 		request.setAttribute("error","Username already taken");
 		RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            

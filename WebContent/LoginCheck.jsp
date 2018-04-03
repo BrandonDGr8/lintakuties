@@ -23,10 +23,10 @@ try {
 	ResultSet rs = ps.executeQuery();
 	if (rs.next()) {
 		session.setAttribute("username", username);
-		response.sendRedirect("success.jsp");
+		response.sendRedirect("success.html");
 	} else {
 		request.setAttribute("error","Invalid Username or Password");
-		RequestDispatcher rd=request.getRequestDispatcher("/login.jsp");            
+		RequestDispatcher rd=request.getRequestDispatcher("/index.jsp");            
 		rd.include(request, response);
 	}
 } catch (Exception e) {
