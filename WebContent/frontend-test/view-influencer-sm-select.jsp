@@ -16,7 +16,7 @@
 			<div id="page-bg"></div>
 			<div class="content-container">
 				<div class="inner-container">
-					<h1 class="title"><a href="index-new.html">Linta(kuties)</a></h1>
+					<h1 class="title"><a href="home.html">Linta(kuties)</a></h1>
 					<div class="inner-content-container">
 						<h1>View Influencer Analytics</h1>
 						<p>Select Social Media Platform</p>
