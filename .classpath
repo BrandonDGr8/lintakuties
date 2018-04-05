@@ -18,6 +18,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/alexcalabro/Documents/CS336/LintakutiesFinal/jars/twitter4j-core-4.0.4.jar"/>
+	<classpathentry kind="lib" path="/Users/alexcalabro/Documents/CS336/lintakuties/twitter4j-core-4.0.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
