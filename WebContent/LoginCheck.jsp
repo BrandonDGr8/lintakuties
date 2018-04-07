@@ -23,7 +23,7 @@ try {
 	ResultSet rs = ps.executeQuery();
 	if (rs.next()) {
 		session.setAttribute("username", username);
-		response.sendRedirect("success.html");
+		response.sendRedirect("frontend-test/home.html"); //this should direct to a home page
 	} else {
 		request.setAttribute("error","Invalid Username or Password");
 		RequestDispatcher rd=request.getRequestDispatcher("/index.jsp");            
