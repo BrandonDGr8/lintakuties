@@ -24,6 +24,18 @@
 				
 				<%
 				String handle = (String)session.getAttribute("handle");
+				int topNumber;
+				if (session.getAttribute("top_number") == null) {
+					topNumber = 10;
+				} else {
+					topNumber = Integer.parseInt((String)session.getAttribute("top_number"));
+				}
+				String type;
+				if (session.getAttribute("top_type") == null) {
+					type = "Favorites";
+				} else {
+					type = (String)session.getAttribute("top_type");
+				}
 				
 				Class.forName("com.mysql.jdbc.Driver");
 				Connection connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/lintakuties?" + "user=lintakuties&password=cs336");
@@ -57,7 +69,49 @@
 					<h3>Number of Posts: <% out.println(num_posts); %></h3>
 					<h3>Average Likes Per Post: <% out.println(favorites); %></h3>
 					<h3>Average Shares Per Post: <% out.println(retweets); %></h3>
-					<h3>Top Posts:</h3>		
+					<h3>Top <% out.print(topNumber); %> Posts By <% out.print(type); %>:</h3>
+					<form action="topByInteractions.jsp">
+						<label for="number"><b>Number</b></label>
+						<input type="text" placeholder="10" name="number" required>
+						<label for="type"><b>Type</b></label>
+						<select name=type>
+							<option value="Favorites">Favorites</option>
+							<option value="Retweets">Retweets</option>
+							<option value="Total Interactions">Total Interactions</option>
+						</select>
+						<button type="submit">Submit</button>
+					</form>
+					<table style="border:1px white solid">
+					<%
+					PreparedStatement top;
+					if (type.equals("Favorites")) {
+						top = connection.prepareStatement("SELECT text, favorites FROM Post, Account_Posts_Post WHERE Account_Posts_Post.postID = Post.postID AND Account_Posts_Post.username = ? ORDER BY favorites DESC LIMIT ?");
+					} else if (type.equals("Retweets")) {
+						top = connection.prepareStatement("SELECT text, retweets FROM Post, Account_Posts_Post WHERE Account_Posts_Post.postID = Post.postID AND Account_Posts_Post.username = ? ORDER BY retweets DESC LIMIT ?");
+					} else {
+						top = connection.prepareStatement("SELECT text, favorites + retweets FROM Post, Account_Posts_Post WHERE Account_Posts_Post.postID = Post.postID AND Account_Posts_Post.username = ? ORDER BY favorites + retweets DESC LIMIT ?");
+					}
+					top.setString(1, handle);
+					top.setInt(2, topNumber);
+					ResultSet topRS = top.executeQuery();
+					int colCount = topRS.getMetaData().getColumnCount();
+					while (topRS.next()) {
+					%>
+		                <tr>
+		                 <%
+		                 for(int i = 1; i <= colCount; i++)
+		                    { %>
+		                     <td style="font-size:15px; padding:5px; border:1px white solid">
+		                     <%= topRS.getString(i)%>
+		                     </td>
+		                <% 
+		                    }
+		                %>                   
+		                </tr>
+		            	<% 
+		        	 }
+		   			 %>
+		   			 </table>		
 				</div>
 			</div>			
 		</div>			

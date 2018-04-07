@@ -20,7 +20,7 @@
 					<div class="inner-content-container">
 						<h1>Twitter Influencers</h1>
 						<p>Select influencer to view analytics or compare.</p>
-						<form action="Influencers.jsp">
+						<form class="influencer-form" action="Influencers.jsp">
 						<select name="influencers">
 							<option value="katyperry">Katy Perry</option>
 							<option value="justinbieber">Justin Bieber</option>
