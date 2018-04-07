@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,7 +16,8 @@
 			<div id="page-bg"></div>
 			<div class="content-container-no-vert">
 				<div class="inner-container-no-vert">
-					<h1 class="title"><a href="home.html">Linta(kuties)</a></h1>
+					<h1 class="title">Linta(kuties)</h1>
+					<br>
 					<%
 					String error = (String)request.getAttribute("error");  
 					if (error != null)
@@ -38,20 +41,12 @@
 							<br>
 							<input type="text" placeholder="Enter Twitter Handle" name="twit-hand">
 							<br>
-							<label for="insta-hand"><b>Instagram Handle</b></label>
-							<br>
-							<input type="text" placeholder="Enter Instagram Handle" name="insta-hand">
-							<br>
-							<label for="Facebook ID"><b>Facebook ID</b></label>
-							<br>
-							<input type="text" placeholder="Enter Facebook ID" name="Facebook ID">
-							<br>
 							<button type="submit">Submit</button>
 							<br>
 						</div>
 
 						<div class="container">
-							<a href="login.html"><button type="button" class="loginbtn">Already a user? Login</button></a>
+							<a href="index.jsp"><button type="button" class="loginbtn">Already a user? Login</button></a>
 							<br>
 						</div>
 					</form> 

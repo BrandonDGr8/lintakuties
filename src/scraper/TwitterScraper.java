@@ -30,29 +30,30 @@ import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationExceptio
 
 public class TwitterScraper {
 	
-	static ArrayList<String> noiseWords;
-	static Connection connection;
+	ArrayList<String> noiseWords;
+	Connection connection;
+	String user;
 	
-	public static void main(String[] args) throws FileNotFoundException, SQLException, ClassNotFoundException {
+	public TwitterScraper(String user) throws ClassNotFoundException, SQLException, FileNotFoundException {
+		this.user = user;
 		Class.forName("com.mysql.jdbc.Driver");
 		connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/lintakuties?" + "user=lintakuties&password=cs336");
 		
 		loadStuff();
-		twitter("KimKardashian");
-		System.out.println("done");
+		twitter();
 	}
 	
-	public static void loadStuff() throws FileNotFoundException {
+	public void loadStuff() throws FileNotFoundException {
 		noiseWords = new ArrayList<String>();
-		Scanner sc = new Scanner(new File("noisewords.txt"));
+		/*Scanner sc = new Scanner(new File("noisewords.txt"));
 		while (sc.hasNext()) {
 			String word = sc.next();
 			noiseWords.add(word);
 		}
-		sc.close();
+		sc.close();*/
 	}
 	
-	public static void twitter(String user) {
+	public void twitter() {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 		  .setOAuthConsumerKey("VSHE3JtKxoT1BtzCoWlWYh10Z")
@@ -79,7 +80,7 @@ public class TwitterScraper {
 		}
 	}
 	
-	public static void userInfo(User user) {
+	public void userInfo(User user) {
 		try {
 			int postCount = user.getStatusesCount();
 			int followerCount = user.getFollowersCount();
@@ -103,7 +104,7 @@ public class TwitterScraper {
 		} 
 	}
 	
-	public static void statusInfo(Status status) {
+	public void statusInfo(Status status) {
 		try {
 			String id = Long.toString(status.getId());
 			int favoriteCount = status.getFavoriteCount();
@@ -117,20 +118,6 @@ public class TwitterScraper {
 			DayOfWeek dayOfWeek = statusDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().getDayOfWeek();
 			
 			String username = status.getUser().getScreenName();	
-			
-			PreparedStatement post = connection.prepareStatement("INSERT INTO Post VALUES (?, ?, ?, ?)");
-			post.setString(1, id);
-			post.setInt(2, favoriteCount);
-			post.setInt(3, retweetCount);
-			post.setString(4, text);
-			
-			try {
-				post.executeUpdate();
-			} catch (MySQLIntegrityConstraintViolationException e) {
-				System.out.println("PK duplicate post");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			
 			PreparedStatement when = connection.prepareStatement("INSERT INTO Account_Posts_Post VALUES (?, ?, ?, ?, ?)");
 			when.setString(1, username);
@@ -146,12 +133,26 @@ public class TwitterScraper {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			PreparedStatement post = connection.prepareStatement("INSERT INTO Post VALUES (?, ?, ?, ?)");
+			post.setString(1, id);
+			post.setInt(2, favoriteCount);
+			post.setInt(3, retweetCount);
+			post.setString(4, text);
+			
+			try {
+				post.executeUpdate();
+			} catch (MySQLIntegrityConstraintViolationException e) {
+				System.out.println("PK duplicate post");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 
 	}
 	
-	public static void scrapeTweet(Status status) {
+	public void scrapeTweet(Status status) {
 		try {
 			String id = Long.toString(status.getId());
 			HashtagEntity[] hashtags = status.getHashtagEntities();
@@ -247,7 +248,7 @@ public class TwitterScraper {
 		} 
 	}
 	
-	public static String getKeyWord(String word) {
+	public String getKeyWord(String word) {
 		word = word.toLowerCase();
 		int lastChar = word.length();
 		for (int i = word.length() - 1; i >= 0; i--) {

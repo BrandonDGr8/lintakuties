@@ -8,31 +8,29 @@
 </head>
 <body>
 
-<%@ page import ="java.sql.*" %>
+<%@ page import ="java.sql.*, scraper.TwitterScraper" %>
 
 <%
 try {
 	String fullname = request.getParameter("fullname");
 	String username = request.getParameter("uname");
 	String password = request.getParameter("psw");
-	String twitHandle = request.getParameter("twit-hand");
-	String instaHandle = request.getParameter("insta-hand");
-	String fbId = request.getParameter("Facebook ID");
+	String handle = request.getParameter("twit-hand");
 	
 	Class.forName("com.mysql.jdbc.Driver");
-	Connection connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/login?" + "user=lintakuties&password=cs336");
-	PreparedStatement ps = connection.prepareStatement("INSERT INTO Accounts VALUES (?, ?, ?, ?, ?, ?)");
-	ps.setString(1, fullname);
-	ps.setString(2, username);
-	ps.setString(3, password);
-	ps.setString(4, twitHandle);
-	ps.setString(5, instaHandle);
-	ps.setString(6, fbId);
+	Connection connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/lintakuties?" + "user=lintakuties&password=cs336");
+	PreparedStatement ps = connection.prepareStatement("INSERT INTO User VALUES (?, ?, ?, ?)");
+	ps.setString(1, username);
+	ps.setString(2, password);
+	ps.setString(3, handle);
+	ps.setString(4, fullname);
 	try {
 		ps.executeUpdate();
 		session.setAttribute("username", username);
+		new TwitterScraper(handle);
 		response.sendRedirect("success.html");
 	} catch (Exception e) {
+		e.printStackTrace();
 		request.setAttribute("error","Username already taken");
 		RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
 		rd.include(request, response);
