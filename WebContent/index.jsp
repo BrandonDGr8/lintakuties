@@ -21,10 +21,10 @@
 						<h1>Welcome!</h1>
 						<p>Observe the social media trends and analytics of<br>top influencers or your personal accounts</p>
 						<div class="link-button">
-							<a href="view-influencer-sm-select.html">View Public Influencer Analytics</a>
+							<a href="view-influencer-twitter-influencer-select.jsp">View Public Influencer Analytics</a>
 						</div>
 						<div class="link-button">
-							<a href="">Login to View Personal Analytics</a>
+							<a href="login.jsp">Login to View Personal Analytics</a>
 						</div>
 					</div>
 				</div>
