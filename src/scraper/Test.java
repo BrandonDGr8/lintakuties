@@ -1,10 +1,12 @@
 package scraper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class Test {
-	String user;
-	
-	public Test(String user) {
-		this.user = user;
-		System.out.println(user);
+	public static void main(String[] args) throws FileNotFoundException {
+		Scanner sc = new Scanner(new File("noisewords.txt"));
+		sc.close();
 	}
 }

@@ -25,12 +25,26 @@ try {
 	ps.setString(3, handle);
 	ps.setString(4, fullname);
 	try {
-		ps.executeUpdate();
-		session.setAttribute("username", username);
-		new TwitterScraper(handle);
-		response.sendRedirect("success.html");
+		PreparedStatement ps2 = connection.prepareStatement("SELECT username FROM Account WHERE username = ?");
+		ps2.setString(1, handle);
+		ResultSet rs = ps2.executeQuery();
+		if (rs.next()) {
+			request.setAttribute("error","Twitter handle is already in database");
+			RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
+			rd.include(request, response);
+		} else {
+			TwitterScraper scraper = new TwitterScraper(handle);
+			if (scraper.scrape() == 1) {
+				request.setAttribute("error","Cannot access " + handle + "'s timeline");
+				RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
+				rd.include(request, response);
+			} else {
+				ps.executeUpdate();
+				session.setAttribute("handle", handle);
+				response.sendRedirect("profile.jsp");
+			}
+		}
 	} catch (Exception e) {
-		e.printStackTrace();
 		request.setAttribute("error","Username already taken");
 		RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
 		rd.include(request, response);

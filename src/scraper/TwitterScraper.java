@@ -12,8 +12,6 @@ import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,9 +20,9 @@ import java.sql.Time;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
@@ -34,26 +32,33 @@ public class TwitterScraper {
 	Connection connection;
 	String user;
 	
-	public TwitterScraper(String user) throws ClassNotFoundException, SQLException, FileNotFoundException {
+	public TwitterScraper(String user) {
 		this.user = user;
+	}
+	
+	public int scrape() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
 		connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/lintakuties?" + "user=lintakuties&password=cs336");
 		
 		loadStuff();
-		twitter();
+		return twitter();
 	}
 	
-	public void loadStuff() throws FileNotFoundException {
-		noiseWords = new ArrayList<String>();
-		/*Scanner sc = new Scanner(new File("noisewords.txt"));
-		while (sc.hasNext()) {
-			String word = sc.next();
-			noiseWords.add(word);
-		}
-		sc.close();*/
+	public void loadStuff() {
+		String[] noise = {"about", "after", "all", "also", "an", "and", "another", "any", "are", "as", "at", "be", 
+				"because", "been", "before", "being", "between", "both", "but", "by", "came", "can", "come", "could", 
+				"did", "do", "does", "each", "else", "for", "from", "get", "got", "has", "had", "he", "have", "her", 
+				"here", "him", "himself", "his", "how", "if", "in", "into", "is", "it", "its", "just","like", "make", 
+				"many", "me", "might", "more", "most", "much", "must", "my", "never", "now", "of", "on", "only", "or", 
+				"other", "our", "out", "over", "re", "said", "same", "see", "she", "should", "since", "so", "some", 
+				"still", "such", "take", "than", "that", "the", "their", "them", "then", "there", "these", "they", "this", 
+				"those", "through", "to", "too", "under", "up", "use", "very", "want", "was", "way", "we", "well", "were", 
+				"what", "when", "where", "which", "while", "who", "will", "with", "would", "you", "your", "a", "b", "c", "d", 
+				"e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+		noiseWords = new ArrayList<String>(Arrays.asList(noise));
 	}
 	
-	public void twitter() {
+	public int twitter() {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 		  .setOAuthConsumerKey("VSHE3JtKxoT1BtzCoWlWYh10Z")
@@ -65,18 +70,23 @@ public class TwitterScraper {
 		
 		
 		try {
-			userInfo(twitter.showUser(user));
-			
-			List<Status> statuses = twitter.getUserTimeline(user, new Paging(1, 20));
-			statuses.addAll(twitter.getUserTimeline(user, new Paging(2, 20)));
-			statuses.addAll(twitter.getUserTimeline(user, new Paging(3, 20)));
-			
-			for (Status status : statuses) {
-				statusInfo(status);
-				scrapeTweet(status);
+			User u = twitter.showUser(user);
+			if (!u.isProtected()) {
+				userInfo(u);
+				List<Status> statuses = twitter.getUserTimeline(user, new Paging(1, 20));
+				statuses.addAll(twitter.getUserTimeline(user, new Paging(2, 20)));
+				statuses.addAll(twitter.getUserTimeline(user, new Paging(3, 20)));
+				
+				for (Status status : statuses) {
+					statusInfo(status);
+					scrapeTweet(status);
+				}
+				return 0;
+			} else {
+				return 1;
 			}
 		} catch (TwitterException e) {
-			System.out.println("Cannot access " + user + "'s timeline.");
+			return 1;
 		}
 	}
 	
@@ -95,7 +105,7 @@ public class TwitterScraper {
 			try {
 				ps.executeUpdate();
 			} catch (MySQLIntegrityConstraintViolationException e) {
-				System.out.println("PK duplicate user");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -129,7 +139,7 @@ public class TwitterScraper {
 			try {
 				when.executeUpdate();
 			} catch (MySQLIntegrityConstraintViolationException e) {
-				System.out.println("PK duplicate when");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -143,7 +153,7 @@ public class TwitterScraper {
 			try {
 				post.executeUpdate();
 			} catch (MySQLIntegrityConstraintViolationException e) {
-				System.out.println("PK duplicate post");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -179,7 +189,7 @@ public class TwitterScraper {
 				try {
 					ps.executeUpdate();
 				} catch (MySQLIntegrityConstraintViolationException e) {
-					System.out.println("PK duplicate hashtag");
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -194,7 +204,7 @@ public class TwitterScraper {
 				try {
 					ps.executeUpdate();
 				} catch (MySQLIntegrityConstraintViolationException e) {
-					System.out.println("PK duplicate link");
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -209,7 +219,7 @@ public class TwitterScraper {
 				try {
 					ps.executeUpdate();
 				} catch (MySQLIntegrityConstraintViolationException e) {
-					System.out.println("PK duplicate mention");
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -224,7 +234,7 @@ public class TwitterScraper {
 				try {
 					ps.executeUpdate();
 				} catch (MySQLIntegrityConstraintViolationException e) {
-					System.out.println("PK duplicate media");
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -238,7 +248,7 @@ public class TwitterScraper {
 				try {
 					ps.executeUpdate();
 				} catch (MySQLIntegrityConstraintViolationException e) {
-					System.out.println("PK duplicate keyword");
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
