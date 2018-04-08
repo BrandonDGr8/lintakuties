@@ -244,6 +244,11 @@
 					makes.setInt(2, partsNumber);
 					ResultSet makesRS = makes.executeQuery();
 					int makesColCount = makesRS.getMetaData().getColumnCount();
+					if (!makesRS.next()) {
+						out.println("<p>No common " + makesPopular.toLowerCase() + "</p>");
+					} else {
+						makesRS.beforeFirst();
+					}
 					while (makesRS.next()) {
 					%>
 		                <tr>

@@ -31,7 +31,21 @@
 					
 					<% 
 					String handle = (String)session.getAttribute("handle"); 
-					String influencer = request.getParameter("influencer-compare");
+					String influencer;
+					if (request.getParameter("influencer-compare") == null) {
+						influencer = (String)session.getAttribute("influencer-compare");
+					} else {
+						session.setAttribute("influencer-compare", request.getParameter("influencer-compare"));
+						influencer = (String)session.getAttribute("influencer-compare");
+					}
+					
+					
+					String commonCompare;
+					if (session.getAttribute("common_compare") == null) {
+						commonCompare = "Keywords";
+					} else {
+						commonCompare = (String)session.getAttribute("common_compare");
+					}
 					
 					Class.forName("com.mysql.jdbc.Driver");
 					Connection connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/lintakuties?" + "user=lintakuties&password=cs336");
@@ -39,18 +53,26 @@
 					PreparedStatement ps = connection.prepareStatement("SELECT name, num_followers, num_posts FROM Account WHERE username = ?");
 					ps.setString(1, handle);
 					ResultSet rs = ps.executeQuery();
-					rs.next();
-					String fullname = rs.getString("name");
-					int num_followers = rs.getInt("num_followers");
-					int num_posts = rs.getInt("num_posts");
+					String fullname = "";
+					int num_followers = 0;
+					int num_posts = 0;
+					if (rs.next()) {
+						fullname = rs.getString("name");
+						num_followers = rs.getInt("num_followers");
+						num_posts = rs.getInt("num_posts");
+					}
 					
 					PreparedStatement ps2 = connection.prepareStatement("SELECT name, num_followers, num_posts FROM Account WHERE username = ?");
 					ps2.setString(1, influencer);
 					ResultSet rs2 = ps2.executeQuery();
-					rs2.next();
-					String fullname2 = rs2.getString("name");
-					int num_followers2 = rs2.getInt("num_followers");
-					int num_posts2 = rs2.getInt("num_posts");
+					String fullname2 = "";
+					int num_followers2 = 0;
+					int num_posts2 = 0;
+					if (rs2.next()) {
+						fullname2 = rs2.getString("name");
+						num_followers2 = rs2.getInt("num_followers");
+						num_posts2 = rs2.getInt("num_posts");
+					}
 					%>
 					
 					<table style="font-size:15px; padding:5px; width:100%">
@@ -117,14 +139,36 @@
 						</tr>
 					</table>
 					
-					<h4>Common Keywords</h4>
+					<h4>Common <% out.print(commonCompare); %></h4>
+					<form action="commonCompare.jsp">
+						<label for="commonCompare"><b>Type</b></label>
+						<select name="commonCompare">
+							<option value="Keywords">Keywords</option>
+							<option value="Hashtags">Hashtags</option>
+							<option value="Mentions">Mentions</option>
+						</select>
+						<button type="submit">Submit</button>
+					</form>
+					
 					<table style="margin-left:auto; margin-right:auto;">
 					<%
-					PreparedStatement common = connection.prepareStatement("SELECT DISTINCT keyword FROM Keyword, Account_Posts_Post WHERE Keyword.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ? AND keyword IN (SELECT keyword FROM Keyword, Account_Posts_Post WHERE Keyword.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ?);");
+					PreparedStatement common;
+					if (commonCompare.equals("Keywords")) {
+						common = connection.prepareStatement("SELECT DISTINCT keyword FROM Keyword, Account_Posts_Post WHERE Keyword.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ? AND keyword IN (SELECT keyword FROM Keyword, Account_Posts_Post WHERE Keyword.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ?)");
+					} else if (commonCompare.equals("Hashtags")) {
+						common = connection.prepareStatement("SELECT DISTINCT hashtag FROM Hashtag, Account_Posts_Post WHERE Hashtag.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ? AND hashtag IN (SELECT hashtag FROM Hashtag, Account_Posts_Post WHERE Hashtag.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ?)");
+					} else {
+						common = connection.prepareStatement("SELECT DISTINCT mention FROM Mention, Account_Posts_Post WHERE Mention.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ? AND mention IN (SELECT mention FROM Mention, Account_Posts_Post WHERE Mention.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ?)");
+					}
 					common.setString(1, handle);
 					common.setString(2, influencer);
 					ResultSet commonRS = common.executeQuery();
 					int count = 0;
+					if (!commonRS.next()) {
+						out.println("<p>No common " + commonCompare.toLowerCase() + "</p>");
+					} else {
+						commonRS.beforeFirst();
+					}
 					while (commonRS.next()) { %>
 						
 						<tr>
