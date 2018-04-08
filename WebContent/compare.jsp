@@ -20,12 +20,14 @@
 		<div class="content-container-no-vert">
 			<div class="inner-container-no-vert">
 			
+				<form action="profile.jsp">
+					<button style="width:auto; float:right; margin-right:10px">Back</button>
+				</form>
+			
 				<h1 class="title"><a href="index.jsp">Linta(kuties)</a></h1>
 				<div class="inner-content-container">
 				
 					<h1>Comparisons</h1>
-					
-					<button href="profile.jsp" style=\"width:auto; float:right; margin-right:10px\">Back</button>
 					
 					<% 
 					String handle = (String)session.getAttribute("handle"); 
@@ -51,19 +53,27 @@
 					int num_posts2 = rs2.getInt("num_posts");
 					%>
 					
-					<h1><% out.print(fullname); %>'s Profile</h1>
-					<h2>Username: <% out.println(handle); %></h2>
-					<h2>Social Media Platform: Twitter</h2>
-					<h2>Analytics:</h2>
-					<h3>Number of Followers: <% out.println(num_followers); %></h3>
-					<h3>Number of Posts: <% out.println(num_posts); %></h3>
+					<table style="font-size:15px; padding:5px; width:100%">
+						<tr>
+							<th>Name</th>
+							<th>Username</th>
+							<th>Followers</th>
+							<th>Posts</th>
+						</tr>
+						<tr>
+							<td><% out.print(fullname); %></td>
+							<td><% out.println(handle); %></td>
+							<td><% out.println(num_followers); %></td>
+							<td><% out.println(num_posts); %></td>	
+						</tr>
+						<tr>
+							<td><% out.print(fullname2); %></td>
+							<td><% out.println(influencer); %></td>
+							<td><% out.println(num_followers2); %></td>
+							<td><% out.println(num_posts2); %></td>	
+						</tr>
 					
-					<h1><% out.print(fullname2); %>'s Profile</h1>
-					<h2>Username: <% out.println(influencer); %></h2>
-					<h2>Social Media Platform: Twitter</h2>
-					<h2>Analytics:</h2>
-					<h3>Number of Followers: <% out.println(num_followers2); %></h3>
-					<h3>Number of Posts: <% out.println(num_posts2); %></h3>
+					</table>
 					
 				</div>
 			</div>			
