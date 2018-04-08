@@ -76,6 +76,8 @@ public class TwitterScraper {
 				List<Status> statuses = twitter.getUserTimeline(user, new Paging(1, 20));
 				statuses.addAll(twitter.getUserTimeline(user, new Paging(2, 20)));
 				statuses.addAll(twitter.getUserTimeline(user, new Paging(3, 20)));
+				statuses.addAll(twitter.getUserTimeline(user, new Paging(4, 20)));
+				statuses.addAll(twitter.getUserTimeline(user, new Paging(5, 20)));
 				
 				for (Status status : statuses) {
 					statusInfo(status);
@@ -97,7 +99,7 @@ public class TwitterScraper {
 			String username = user.getScreenName();
 			String name = user.getName();
 			
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO Account VALUES (?, ?, ?, ?)");
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO Account VALUES (?, ?, ?, ?, \'no\')");
 			ps.setString(1, username);
 			ps.setString(2, name);
 			ps.setInt(3, followerCount);
@@ -129,12 +131,24 @@ public class TwitterScraper {
 			
 			String username = status.getUser().getScreenName();	
 			
-			PreparedStatement when = connection.prepareStatement("INSERT INTO Account_Posts_Post VALUES (?, ?, ?, ?, ?)");
+			String timeOfDay;
+			if (time.getHours() < 6) {
+				timeOfDay = "NIGHT";
+			} else if (time.getHours() >= 6 && time.getHours() < 12) {
+				timeOfDay = "MORNING";
+			} else if (time.getHours() >= 12 && time.getHours() < 18) {
+				timeOfDay = "AFTERNOON";
+			} else {
+				timeOfDay = "EVENING";
+			}
+			
+			PreparedStatement when = connection.prepareStatement("INSERT INTO Account_Posts_Post VALUES (?, ?, ?, ?, ?, ?)");
 			when.setString(1, username);
 			when.setString(2, id);
 			when.setString(3, dayOfWeek.toString());
 			when.setDate(4, date);
 			when.setTime(5, time);
+			when.setString(6, timeOfDay);
 			
 			try {
 				when.executeUpdate();

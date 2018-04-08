@@ -64,6 +64,26 @@
 					topParts = (String)session.getAttribute("top_parts");
 				}
 				
+				int makesPopularNumber;
+				if (session.getAttribute("makes_popular_number") == null) {
+					makesPopularNumber = 10;
+				} else {
+					makesPopularNumber = Integer.parseInt((String)session.getAttribute("makes_popular_number"));
+				}
+				String makesPopular;
+				if (session.getAttribute("makes_popular") == null) {
+					makesPopular = "Keywords";
+				} else {
+					makesPopular = (String)session.getAttribute("makes_popular");
+				}
+				
+				String affects;
+				if (session.getAttribute("affects") == null) {
+					affects = "Hashtags";
+				} else {
+					affects = (String)session.getAttribute("affects");
+				}
+				
 				Class.forName("com.mysql.jdbc.Driver");
 				Connection connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/lintakuties?" + "user=lintakuties&password=cs336");
 				
@@ -189,6 +209,106 @@
 					<h3>Shares over Time:</h3>
 					<h3>Time of posts vs Interactions:</h3>
 					<h3>Day of posts vs Interactions:</h3>	
+					
+					<h2>What Makes A Post Popular?</h2>
+					<h3><% out.print(makesPopular); %> Common to <% out.print(makesPopularNumber); %> Most Popular Posts</h3>
+					<form action="makesPopular.jsp">
+						<label for="makesPopularNumber"><b>Number</b></label>
+						<input type="text" placeholder="10" name="makesPopularNumber" required>
+						<label for="makesPopular"><b>Type</b></label>
+						<select name="makesPopular">
+							<option value="Keywords">Keywords</option>
+							<option value="Hashtags">Hashtags</option>
+							<option value="Mentions">Mentions</option>
+						</select>
+						<button type="submit">Submit</button>
+					</form>
+					
+					<table style="margin-left:auto; margin-right:auto;">
+					<%
+					PreparedStatement makes;
+					if (makesPopular.equals("Keywords")) {
+						makes = connection.prepareStatement("SELECT keyword, COUNT(*) FROM Keyword INNER JOIN (SELECT Post.postID FROM Post, Account_Posts_Post WHERE Account_Posts_Post.postID = Post.postID AND Account_Posts_Post.username = ? ORDER BY favorites + retweets DESC LIMIT ?) AS keyw ON Keyword.postID = keyw.postID GROUP BY keyword HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC");
+					} else if (makesPopular.equals("Hashtags")) {
+						makes = connection.prepareStatement("SELECT hashtag, COUNT(*) FROM Hashtag INNER JOIN (SELECT Post.postID FROM Post, Account_Posts_Post WHERE Account_Posts_Post.postID = Post.postID AND Account_Posts_Post.username = ? ORDER BY favorites + retweets DESC LIMIT ?) AS hash ON Hashtag.postID = hash.postID GROUP BY hashtag HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC");
+					} else {
+						makes = connection.prepareStatement("SELECT mention, COUNT(*) FROM Mention INNER JOIN (SELECT Post.postID FROM Post, Account_Posts_Post WHERE Account_Posts_Post.postID = Post.postID AND Account_Posts_Post.username = ? ORDER BY favorites + retweets DESC LIMIT ?) AS men ON Mention.postID = men.postID GROUP BY mention HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC");
+					}
+					makes.setString(1, handle);
+					makes.setInt(2, partsNumber);
+					ResultSet makesRS = makes.executeQuery();
+					int makesColCount = makesRS.getMetaData().getColumnCount();
+					while (makesRS.next()) {
+					%>
+		                <tr>
+		                 <%
+		                 for(int i = 1; i <= makesColCount; i++)
+		                    { %>
+		                     <td style="font-size:15px; padding:5px">
+		                     <%= makesRS.getString(i)%>
+		                     </td>
+		                <% 
+		                    }
+		                %>                   
+		                </tr>
+		            	<% 
+		        	 }
+		   			 %>
+					</table>
+					
+					<h3>How <% out.print(affects); %> Affect Interactions</h3>
+					<form action="affects.jsp">
+						<label for="affects"><b>Type</b></label>
+						<select name="affects">
+							<option value="Hashtags">Hashtags</option>
+							<option value="Mentions">Mentions</option>
+							<option value="Media">Media</option>
+							<option value="Links">Links</option>
+						</select>
+						<button type="submit">Submit</button>
+					</form>
+					
+					<table style="margin-left:auto; margin-right:auto;">
+					<%
+					PreparedStatement affectWith;
+					PreparedStatement affectWithout;
+					if (affects.equals("Hashtags")) {
+						affectWith = connection.prepareStatement("SELECT AVG(favorites + retweets) FROM Post WHERE favorites <> 0 AND postID IN (SELECT Hashtag.postID FROM Account_Posts_Post, Hashtag WHERE Account_Posts_Post.postID = Hashtag.postID AND username = ?)");
+						affectWithout = connection.prepareStatement("SELECT AVG(favorites + retweets) FROM Post WHERE favorites <> 0 AND postID NOT IN (SELECT Hashtag.postID FROM Account_Posts_Post, Hashtag WHERE Account_Posts_Post.postID = Hashtag.postID AND username = ?)");
+					} else if (affects.equals("Mentions")) {
+						affectWith = connection.prepareStatement("SELECT AVG(favorites + retweets) FROM Post WHERE favorites <> 0 AND postID IN (SELECT Mention.postID FROM Account_Posts_Post, Mention WHERE Account_Posts_Post.postID = Mention.postID AND username = ?)");
+						affectWithout = connection.prepareStatement("SELECT AVG(favorites + retweets) FROM Post WHERE favorites <> 0 AND postID NOT IN (SELECT Mention.postID FROM Account_Posts_Post, Mention WHERE Account_Posts_Post.postID = Mention.postID AND username = ?)");
+					} else if (affects.equals("Media")) { 
+						affectWith = connection.prepareStatement("SELECT AVG(favorites + retweets) FROM Post WHERE favorites <> 0 AND postID IN (SELECT Media.postID FROM Account_Posts_Post, Media WHERE Account_Posts_Post.postID = Media.postID AND username = ?)");
+						affectWithout = connection.prepareStatement("SELECT AVG(favorites + retweets) FROM Post WHERE favorites <> 0 AND postID NOT IN (SELECT Media.postID FROM Account_Posts_Post, Media WHERE Account_Posts_Post.postID = Media.postID AND username = ?)");
+					} else {
+						affectWith = connection.prepareStatement("SELECT AVG(favorites + retweets) FROM Post WHERE favorites <> 0 AND postID IN (SELECT Link.postID FROM Account_Posts_Post, Link WHERE Account_Posts_Post.postID = Link.postID AND username = ?)");
+						affectWithout = connection.prepareStatement("SELECT AVG(favorites + retweets) FROM Post WHERE favorites <> 0 AND postID NOT IN (SELECT Link.postID FROM Account_Posts_Post, Link WHERE Account_Posts_Post.postID = Link.postID AND username = ?)");
+					}
+					affectWith.setString(1, handle);
+					affectWithout.setString(1, handle);
+					ResultSet affectWithRS = affectWith.executeQuery();
+					ResultSet affectWithoutRS = affectWithout.executeQuery();
+					while (affectWithRS.next() && affectWithoutRS.next()) {
+					%>
+						<tr>
+							<td></td>
+							<td style="font-size:15px; padding:5px">With</td><td style="font-size:15px; padding:5px">Without</td>
+						</tr>
+		                <tr>
+		                	 <td style="font-size:15px; padding:5px">Total Interactions</td>
+		                     <td style="font-size:15px; padding:5px">
+		                     <%= affectWithRS.getInt(1)%>
+		                     </td> 
+		                     <td style="font-size:15px; padding:5px">
+		                     <%= affectWithoutRS.getInt(1)%>
+		                     </td>               
+		                </tr>
+		            	<% 
+		        	 }
+		   			 %>
+					</table>
+					
 				</div>
 			</div>			
 		</div>			
