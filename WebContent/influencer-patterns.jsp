@@ -63,6 +63,38 @@
 			   			 %>
 					</table>
 					
+					<h6>The average interactions per post increase as a post gets older.</h6>
+					
+					<p style="font-size:12px">Influencer posts were entered into the database on 2018-04-08.</p>
+					<table style="margin-left:auto; margin-right:auto;">
+					<tr>
+						<th style="font-size:15px; padding:5px">Posted Before</th>
+						<th style="font-size:15px; padding:5px">Average Interactions</th>
+					</tr>
+					
+					<%
+					PreparedStatement olderPost = connection.prepareStatement("SELECT AVG(retweets + favorites) FROM Post, Account_Posts_Post, Account WHERE Account.username = Account_Posts_Post.username AND Account_Posts_Post.postID = Post.postID AND date < ? AND favorites <> 0 AND influencer = \'yes\'");
+					String[] dates = {"2018-04-07", "2018-04-06", "2018-04-05", "2018-04-04", "2018-04-03", "2018-04-02", "2018-04-01"};
+					for (String date : dates) {
+						olderPost.setString(1, date);
+						ResultSet olderRS = olderPost.executeQuery();
+						if (olderRS.next()) {
+						%>
+			                <tr>
+			                     <td style="font-size:15px; padding:5px">
+			                     <%= date %>
+			                     </td>  
+			                     <td style="font-size:15px; padding:5px">
+			                     <%= olderRS.getInt(1)%>
+			                     </td>                
+			                </tr>
+			            	<% 
+			        	 }
+			   			 %>
+						
+					<%}
+					%>
+					</table>
 				</div>
 			</div>			
 		</div>			
