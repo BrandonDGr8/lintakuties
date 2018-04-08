@@ -50,7 +50,7 @@ public class TwitterScraper {
 				"did", "do", "does", "each", "else", "for", "from", "get", "got", "has", "had", "he", "have", "her", 
 				"here", "him", "himself", "his", "how", "if", "in", "into", "is", "it", "its", "just","like", "make", 
 				"many", "me", "might", "more", "most", "much", "must", "my", "never", "now", "of", "on", "only", "or", 
-				"other", "our", "out", "over", "re", "said", "same", "see", "she", "should", "since", "so", "some", 
+				"other", "our", "out", "over", "re", "rt", "said", "same", "see", "she", "should", "since", "so", "some", 
 				"still", "such", "take", "than", "that", "the", "their", "them", "then", "there", "these", "they", "this", 
 				"those", "through", "to", "too", "under", "up", "use", "very", "want", "was", "way", "we", "well", "were", 
 				"what", "when", "where", "which", "while", "who", "will", "with", "would", "you", "your", "a", "b", "c", "d", 

@@ -19,7 +19,21 @@
 		<div id="page-bg"></div>
 		<div class="content-container-no-vert">
 			<div class="inner-container-no-vert">
-				<h1 class="title"><a href="home.html">Linta(kuties)</a></h1>
+			
+				<%
+				String in = (String)session.getAttribute("influencer?");
+				if (in != null) {
+					out.println("<form action=\"Deletion.jsp\">");
+					out.println("<button type=\"submit\" style=\"width:auto; float:right; margin-right:10px\">Logout</button>");
+					out.println("</form>");
+				} else {
+					out.println("<form action=\"BackHome.jsp\">");
+					out.println("<button type=\"submit\" style=\"width:auto; float:right; margin-right:10px\">Back to Home</button>");
+					out.println("</form>");
+				}
+				%>
+			
+				<h1 class="title"><a href="index.jsp">Linta(kuties)</a></h1>
 				<div class="inner-content-container">
 				
 				<%
@@ -111,7 +125,13 @@
 		            	<% 
 		        	 }
 		   			 %>
-		   			 </table>		
+		   			 </table>	
+		   			 
+		   			<h3>Most Common Keywords, Tags, and Mentions</h3>
+					<h3>Likes over Time:</h3>
+					<h3>Shares over Time:</h3>
+					<h3>Time of posts vs Interactions:</h3>
+					<h3>Day of posts vs Interactions:</h3>	
 				</div>
 			</div>			
 		</div>			

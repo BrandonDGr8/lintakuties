@@ -27,6 +27,7 @@ try {
 		ps2.setString(1, handle);
 		ResultSet rs2 = ps2.executeQuery();
 		if (rs2.next()) {
+			session.setAttribute("influencer?", "no");
 			session.setAttribute("handle", handle);
 			response.sendRedirect("profile.jsp");
 		} else {
@@ -36,6 +37,7 @@ try {
 				RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
 				rd.include(request, response);
 			} else {
+				session.setAttribute("influencer?", "no");
 				session.setAttribute("handle", handle);
 				response.sendRedirect("profile.jsp");
 			}

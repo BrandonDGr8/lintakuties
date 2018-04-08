@@ -40,6 +40,7 @@ try {
 				rd.include(request, response);
 			} else {
 				ps.executeUpdate();
+				session.setAttribute("influencer?", "no");
 				session.setAttribute("handle", handle);
 				response.sendRedirect("profile.jsp");
 			}
