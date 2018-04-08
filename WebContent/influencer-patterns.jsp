@@ -13,7 +13,6 @@
 	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-
 	<%@ page import = "java.sql.*" %>
 	<div class="page-container">
 		<div id="page-bg"></div>
@@ -28,6 +27,41 @@
 				<div class="inner-content-container">
 				
 					<h1>Influencer Twitter Patterns</h1>
+
+					<%
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/lintakuties?" + "user=lintakuties&password=cs336");
+					
+					PreparedStatement timeOfDay = connection.prepareStatement("SELECT DISTINCT AVG(favorites + retweets), timeOfDay FROM Account_Posts_Post, Account, Post WHERE Account_Posts_Post.username = Account.username AND Post.postID = Account_Posts_Post.postID AND favorites <> 0 AND influencer = 'yes' GROUP BY timeOfDay ORDER BY AVG(favorites + retweets) DESC");
+					ResultSet timeOfDayRS = timeOfDay.executeQuery();
+					int timeColCount = timeOfDayRS.getMetaData().getColumnCount();
+					String time = "";
+					if (timeOfDayRS.next()) {
+						time = timeOfDayRS.getString(2).toLowerCase();
+					}
+					timeOfDayRS.beforeFirst();
+					%>
+					<h6>Tweets posted in the <%= time %> get the most average likes.</h6>
+					
+					<table style="margin-left:auto; margin-right:auto;">
+					<tr>
+						<th style="font-size:15px; padding:5px">Time of Day</th>
+						<th style="font-size:15px; padding:5px">Average Interactions</th>
+					</tr>
+					<% while (timeOfDayRS.next()) {
+						%>
+			                <tr>
+			                     <td style="font-size:15px; padding:5px">
+			                     <%= timeOfDayRS.getString(2)%>
+			                     </td>  
+			                     <td style="font-size:15px; padding:5px">
+			                     <%= timeOfDayRS.getInt(1)%>
+			                     </td>                
+			                </tr>
+			            	<% 
+			        	 }
+			   			 %>
+					</table>
 					
 				</div>
 			</div>			

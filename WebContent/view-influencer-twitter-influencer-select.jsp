@@ -29,19 +29,19 @@
 							<option value="taylorswift13">Taylor Swift</option>
 							<option value="ladygaga">Lady Gaga</option>
 							<option value="TheEllenShow">Ellen DeGeneres</option>
-							<option value="YouTube">YouTube</option>
 							<option value="Cristiano">Cristiano Ronaldo</option>
 							<option value="jtimberlake">Justin Timberlake</option>
-							<option value="Twitter">Twitter</option>
 							<option value="KimKardashian">Kim Kardashian</option>
 							<option value="britneyspears">Britney Spears</option>
 							<option value="ArianaGrande">Ariana Grande</option>
 							<option value="selenagomez">Selena Gomez</option>
 							<option value="ddlovato">Demi Lovato</option>
-							<option value="cnnbrk">CNN</option>
 							<option value="shakira">Shakira</option>
 							<option value="jimmyfallon">Jimmy Fallon</option>
 							<option value="realDonaldTrump">Donald Trump</option>
+							<option value="BillGates">Bill Gates</option>
+							<option value="JLo">Jennifer Lopez</option>
+							<option value="Oprah">Oprah Winfrey</option>
 						</select>
 						<button type="submit">Submit</button>
 						<br>
