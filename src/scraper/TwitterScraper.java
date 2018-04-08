@@ -99,7 +99,7 @@ public class TwitterScraper {
 			String username = user.getScreenName();
 			String name = user.getName();
 			
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO Account VALUES (?, ?, ?, ?, \'no\')");
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO Account VALUES (?, ?, ?, ?, \'no\', null)");
 			ps.setString(1, username);
 			ps.setString(2, name);
 			ps.setInt(3, followerCount);

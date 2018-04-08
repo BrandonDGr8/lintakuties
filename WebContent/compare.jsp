@@ -72,9 +72,34 @@
 							<td><% out.println(num_followers2); %></td>
 							<td><% out.println(num_posts2); %></td>	
 						</tr>
-					
 					</table>
 					
+					<%
+					PreparedStatement avgFave = connection.prepareStatement("SELECT username, ratio FROM (SELECT AVG(favorites) / num_followers AS ratio, Account.username FROM Post, Account, Account_Posts_Post WHERE Account.username = Account_Posts_Post.username AND Account_Posts_Post.postID = Post.postID AND favorites <> 0 GROUP BY Account.username HAVING Account.username = ? OR Account.username = ?) AS maxlikes WHERE ratio = (SELECT MAX(ratio) FROM (SELECT AVG(favorites) / num_followers AS ratio, Account.username FROM Post, Account, Account_Posts_Post WHERE Account.username = Account_Posts_Post.username AND Account_Posts_Post.postID = Post.postID AND favorites <> 0 GROUP BY Account.username HAVING Account.username = ? OR Account.username = ?) AS maxlikes)");
+					avgFave.setString(1, handle);
+					avgFave.setString(2, influencer);
+					avgFave.setString(3, handle);
+					avgFave.setString(4, influencer);
+					
+					ResultSet avgFaveRS = avgFave.executeQuery();
+					String avgFaveUser = "";
+					double avgFaveRatio = 0;
+					if (avgFaveRS.next()) {
+						avgFaveUser = avgFaveRS.getString("username");
+						avgFaveRatio = avgFaveRS.getDouble("ratio");
+					}
+					%>
+					
+					<table style="font-size:15px; padding:5px; width:100%">
+						<tr>
+							<th>Most Average Favorites Per Followers</th>
+							<td><% out.println(avgFaveUser); %></td>
+							<td><% out.println(avgFaveRatio); %></td>
+						</tr>
+						<tr>
+							<th>Most Average Retweets Per Followers</th>
+						</tr>
+					</table>
 				</div>
 			</div>			
 		</div>			
