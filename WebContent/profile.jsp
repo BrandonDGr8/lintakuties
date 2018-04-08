@@ -24,7 +24,7 @@
 				String in = (String)session.getAttribute("influencer?");
 				if (in != null) {
 					out.println("<form action=\"Deletion.jsp\">");
-					out.println("<button type=\"submit\" style=\"width:auto; float:right; margin-right:10px\">Logout</button>");
+					out.println("<button id=\"deletion-button\" type=\"submit\" style=\"width:auto; float:right; margin-right:10px\">Logout</button>");
 					out.println("</form>");
 				} else {
 					out.println("<form action=\"BackHome.jsp\">");
@@ -32,6 +32,12 @@
 					out.println("</form>");
 				}
 				%>
+				
+				<script>
+				document.getElementById("deletion-button").onclick = function() {
+					alert("Your Twitter data will be deleted from the database when you log out and can be restored when you log back in.");
+				};
+				</script>
 			
 				<h1 class="title"><a href="index.jsp">Linta(kuties)</a></h1>
 				<div class="inner-content-container">

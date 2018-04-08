@@ -88,18 +88,60 @@
 						avgFaveUser = avgFaveRS.getString("username");
 						avgFaveRatio = avgFaveRS.getDouble("ratio");
 					}
+					
+					PreparedStatement avgRe = connection.prepareStatement("SELECT username, ratio FROM (SELECT AVG(retweets) / num_followers AS ratio, Account.username FROM Post, Account, Account_Posts_Post WHERE Account.username = Account_Posts_Post.username AND Account_Posts_Post.postID = Post.postID GROUP BY Account.username HAVING Account.username = ? OR Account.username = ?) AS maxfaves WHERE ratio = (SELECT MAX(ratio) FROM (SELECT AVG(retweets) / num_followers AS ratio, Account.username FROM Post, Account, Account_Posts_Post WHERE Account.username = Account_Posts_Post.username AND Account_Posts_Post.postID = Post.postID GROUP BY Account.username HAVING Account.username = ? OR Account.username = ?) AS maxfaves)");
+					avgRe.setString(1, handle);
+					avgRe.setString(2, influencer);
+					avgRe.setString(3, handle);
+					avgRe.setString(4, influencer);
+					
+					ResultSet avgReRS = avgRe.executeQuery();
+					String avgReUser = "";
+					double avgReRatio = 0;
+					if (avgReRS.next()) {
+						avgReUser = avgReRS.getString("username");
+						avgReRatio = avgReRS.getDouble("ratio");
+					}
 					%>
 					
 					<table style="font-size:15px; padding:5px; width:100%">
 						<tr>
-							<th>Most Average Favorites Per Followers</th>
-							<td><% out.println(avgFaveUser); %></td>
+							<th>Most Average Favorites Per Followers: </th>
+							<td><% out.println(avgFaveUser); %>,</td>
 							<td><% out.println(avgFaveRatio); %></td>
 						</tr>
 						<tr>
-							<th>Most Average Retweets Per Followers</th>
+							<th>Most Average Retweets Per Followers:</th>
+							<td><% out.println(avgReUser); %>,</td>
+							<td><% out.println(avgReRatio); %></td>
 						</tr>
 					</table>
+					
+					<h4>Common Keywords</h4>
+					<table style="margin-left:auto; margin-right:auto;">
+					<%
+					PreparedStatement common = connection.prepareStatement("SELECT DISTINCT keyword FROM Keyword, Account_Posts_Post WHERE Keyword.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ? AND keyword IN (SELECT keyword FROM Keyword, Account_Posts_Post WHERE Keyword.postID = Account_Posts_Post.postID AND Account_Posts_Post.username = ?);");
+					common.setString(1, handle);
+					common.setString(2, influencer);
+					ResultSet commonRS = common.executeQuery();
+					int count = 0;
+					while (commonRS.next()) { %>
+						
+						<tr>
+							<% for (int i = 0; i < 5; i++) {
+								if (commonRS.next()) {	%>
+									<td style="font-size:15px; padding:5px">
+		                    		 <%= commonRS.getString(1) %>
+		                    	</td>
+								<% }
+							}
+							 %>
+						</tr>
+					<% 
+					}
+					%>
+					</table>
+					
 				</div>
 			</div>			
 		</div>			

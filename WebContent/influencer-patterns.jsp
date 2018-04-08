@@ -20,6 +20,10 @@
 		<div class="content-container-no-vert">
 			<div class="inner-container-no-vert">
 			
+			<form action="BackHome.jsp">
+				<button type="submit" style="width:auto; float:right; margin-right:10px">Back to Home</button>
+			</form>
+			
 				<h1 class="title"><a href="index.jsp">Linta(kuties)</a></h1>
 				<div class="inner-content-container">
 				
