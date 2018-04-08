@@ -24,6 +24,7 @@
 				<div class="inner-content-container">
 				
 					<h1>Influencer Twitter Patterns</h1>
+					
 				</div>
 			</div>			
 		</div>			
