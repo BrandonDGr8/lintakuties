@@ -51,6 +51,19 @@
 					type = (String)session.getAttribute("top_type");
 				}
 				
+				int partsNumber;
+				if (session.getAttribute("parts_number") == null) {
+					partsNumber = 10;
+				} else {
+					partsNumber = Integer.parseInt((String)session.getAttribute("parts_number"));
+				}
+				String topParts;
+				if (session.getAttribute("top_parts") == null) {
+					topParts = "Keywords";
+				} else {
+					topParts = (String)session.getAttribute("top_parts");
+				}
+				
 				Class.forName("com.mysql.jdbc.Driver");
 				Connection connection = DriverManager.getConnection("jdbc:mysql://cs336.cv4x80hazco8.us-east-2.rds.amazonaws.com:3306/lintakuties?" + "user=lintakuties&password=cs336");
 				
@@ -88,7 +101,7 @@
 						<label for="number"><b>Number</b></label>
 						<input type="text" placeholder="10" name="number" required>
 						<label for="type"><b>Type</b></label>
-						<select name=type>
+						<select name="type">
 							<option value="Favorites">Favorites</option>
 							<option value="Retweets">Retweets</option>
 							<option value="Total Interactions">Total Interactions</option>
@@ -127,7 +140,51 @@
 		   			 %>
 		   			 </table>	
 		   			 
-		   			<h3>Most Common Keywords, Tags, and Mentions</h3>
+		   			<h3><% out.println(partsNumber); %> Most Common <% out.println(topParts); %></h3>
+		   			<form action="topParts.jsp">
+						<label for="number_parts"><b>Number</b></label>
+						<input type="text" placeholder="10" name="number_parts" required>
+						<label for="top_parts"><b>Type</b></label>
+						<select name="top_parts">
+							<option value="Keywords">Keywords</option>
+							<option value="Hashtags">Hashtags</option>
+							<option value="Mentions">Mentions</option>
+						</select>
+						<button type="submit">Submit</button>
+					</form>
+					
+					<table style="margin-left:auto; margin-right:auto;">
+					<%
+					PreparedStatement parts;
+					if (topParts.equals("Keywords")) {
+						parts = connection.prepareStatement("SELECT keyword, COUNT(*) FROM Keyword, Account_Posts_Post WHERE Account_Posts_Post.postID = Keyword.postID AND username = ? GROUP BY keyword ORDER BY COUNT(*) DESC LIMIT ?");
+					} else if (topParts.equals("Hashtags")) {
+						parts = connection.prepareStatement("SELECT hashtag, COUNT(*) FROM Hashtag, Account_Posts_Post WHERE Account_Posts_Post.postID = Hashtag.postID AND username = ? GROUP BY hashtag ORDER BY COUNT(*) DESC LIMIT ?");
+					} else {
+						parts = connection.prepareStatement("SELECT mention, COUNT(*) FROM Mention, Account_Posts_Post WHERE Account_Posts_Post.postID = Mention.postID AND username = ? GROUP BY mention ORDER BY COUNT(*) DESC LIMIT ?");
+					}
+					parts.setString(1, handle);
+					parts.setInt(2, partsNumber);
+					ResultSet partsRS = parts.executeQuery();
+					int partsColCount = partsRS.getMetaData().getColumnCount();
+					while (partsRS.next()) {
+					%>
+		                <tr>
+		                 <%
+		                 for(int i = 1; i <= partsColCount; i++)
+		                    { %>
+		                     <td style="font-size:15px; padding:5px">
+		                     <%= partsRS.getString(i)%>
+		                     </td>
+		                <% 
+		                    }
+		                %>                   
+		                </tr>
+		            	<% 
+		        	 }
+		   			 %>
+					</table>
+					
 					<h3>Likes over Time:</h3>
 					<h3>Shares over Time:</h3>
 					<h3>Time of posts vs Interactions:</h3>

@@ -25,10 +25,14 @@ try {
 	ps.setString(3, handle);
 	ps.setString(4, fullname);
 	try {
-		PreparedStatement ps2 = connection.prepareStatement("SELECT username FROM Account WHERE username = ?");
+		PreparedStatement ps2 = connection.prepareStatement("SELECT username FROM User WHERE username = ?");
 		ps2.setString(1, handle);
-		ResultSet rs = ps2.executeQuery();
-		if (rs.next()) {
+		ResultSet rs2 = ps2.executeQuery();
+		
+		PreparedStatement ps22 = connection.prepareStatement("SELECT handle FROM User WHERE handle = ?");
+		ps22.setString(1, handle);
+		ResultSet rs22 = ps22.executeQuery();
+		if (rs2.next() || rs22.next()) {
 			request.setAttribute("error","Twitter handle is already in database");
 			RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
 			rd.include(request, response);
@@ -38,7 +42,7 @@ try {
 				request.setAttribute("error","Cannot access " + handle + "'s timeline");
 				RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
 				rd.include(request, response);
-			} else {
+			} else { 
 				ps.executeUpdate();
 				session.setAttribute("influencer?", "no");
 				session.setAttribute("handle", handle);

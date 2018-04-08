@@ -43,6 +43,8 @@
 							<br>
 							<button type="submit">Submit</button>
 							<br>
+							<p style="font-size:12px">Please wait after hitting submit.<br>
+							Loading Twitter data takes a few seconds.</p>
 						</div>
 
 						<div class="container">

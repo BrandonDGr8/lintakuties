@@ -33,6 +33,8 @@
 							<br>
 							<button type="submit">Login</button>
 							<br>
+							<p style="font-size:12px">Please wait after hitting submit.<br>
+							Loading Twitter data takes a few seconds.</p>
 							<label class= "remember">
 								<input type="checkbox" checked="checked" name="remember"> Remember me
 							</label>
