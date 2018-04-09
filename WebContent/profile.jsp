@@ -112,51 +112,17 @@
 				ResultSet rs3 = ps3.executeQuery();
 				rs3.next();
 				int favorites = rs3.getInt("favorites");
+				
+				
 				%>
 					<h1><% out.print(fullname); %>'s Profile</h1>
 					<h2>Username: <% out.println(handle); %></h2>
 					<h2>Social Media Platform: Twitter</h2>
 					<h2>Analytics:</h2>
-									
-				    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-				    <script type="text/javascript">
-				    google.charts.load('current', {packages: ['corechart', 'bar']});
-				    google.charts.setOnLoadCallback(drawBasic);
-
-				    function drawBasic() {
-						var data = google.visualization.arrayToDataTable([
-				            ["<% out.print(fullname); %>", 'Analytics',],
-				            ["Number of Posts", <% out.print(num_posts); %>],
-				            ["Average Shares Per Post",  <% out.print(retweets); %>],
-				            ["Average Likes Per Post", <% out.print(favorites); %>],
-				          ]);
-
-				          var options = {
-				            title: 'Analytics',
-				            chartArea: {width: '50%'},
-				            hAxis: {
-				              title: 'Quantity',
-				              minValue: 0
-				            },
-				            vAxis: {
-				              title: 'Analytic'
-				            }
-				          };
-
-				          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-
-				          chart.draw(data, options);
-				        }
-				    </script>
-
-
-   					 <div id="chart_div"></div>
-
-
 					<h3>Number of Followers: <% out.println(num_followers); %></h3>
-					<!-- <h3>Number of Posts: <% out.println(num_posts); %></h3>
+					<h3>Number of Posts: <% out.println(num_posts); %></h3>
 					<h3>Average Likes Per Post: <% out.println(favorites); %></h3>
-					<h3>Average Shares Per Post: <% out.println(retweets); %></h3>-->
+					<h3>Average Shares Per Post: <% out.println(retweets); %></h3>
 					<h3>Top <% out.print(topNumber); %> Posts By <% out.print(type); %>:</h3>
 					<form action="topByInteractions.jsp">
 						<label for="number"><b>Number</b></label>
@@ -337,6 +303,39 @@
 					ResultSet affectWithoutRS = affectWithout.executeQuery();
 					while (affectWithRS.next() && affectWithoutRS.next()) {
 					%>
+					<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+				    <script type="text/javascript">
+				    
+				    google.charts.load('current', {packages: ['corechart', 'bar']});
+				    google.charts.setOnLoadCallback(drawBasic);
+
+				    function drawBasic() {
+						var data = google.visualization.arrayToDataTable([
+				            ["<% out.print(fullname); %>", 'Analytics',],
+				            ["With Interactions", <%= affectWithRS.getInt(1)%>],
+				            ["Without Interactions",  <%= affectWithoutRS.getInt(1)%>],
+				          ]);
+
+				          var options = {
+				            title: 'Analytics',
+				            chartArea: {width: '50%'},
+				            hAxis: {
+				              title: 'Quantity',
+				              minValue: 0
+				            },
+				            vAxis: {
+				              title: 'Analytic'
+				            }
+				          };
+
+				          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+				          chart.draw(data, options);
+				        }
+				    </script>
+
+
+   					 <div id="chart_div"></div>
 						<tr>
 							<td></td>
 							<td style="font-size:15px; padding:5px">With</td><td style="font-size:15px; padding:5px">Without</td>
