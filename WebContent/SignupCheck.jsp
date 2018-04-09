@@ -25,7 +25,7 @@ try {
 	ps.setString(3, handle);
 	ps.setString(4, fullname);
 	try {
-		PreparedStatement ps2 = connection.prepareStatement("SELECT username FROM User WHERE username = ?");
+		PreparedStatement ps2 = connection.prepareStatement("SELECT username FROM Account WHERE username = ?");
 		ps2.setString(1, handle);
 		ResultSet rs2 = ps2.executeQuery();
 		
@@ -53,7 +53,7 @@ try {
 		request.setAttribute("error","Username already taken");
 		RequestDispatcher rd=request.getRequestDispatcher("/signup.jsp");            
 		rd.include(request, response);
-	}
+	} 
 		
 } catch (Exception e) {
 	e.printStackTrace();
