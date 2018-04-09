@@ -212,11 +212,6 @@
 		   			 %>
 					</table>
 					
-					<h3>Likes over Time:</h3>
-					<h3>Shares over Time:</h3>
-					<h3>Time of posts vs Interactions:</h3>
-					<h3>Day of posts vs Interactions:</h3>	
-					
 					<h2>What Makes A Post Popular?</h2>
 					<h3><% out.print(makesPopular); %> Common to <% out.print(makesPopularNumber); %> Most Popular Posts</h3>
 					<form action="makesPopular.jsp">
@@ -301,6 +296,8 @@
 					affectWithout.setString(1, handle);
 					ResultSet affectWithRS = affectWith.executeQuery();
 					ResultSet affectWithoutRS = affectWithout.executeQuery();
+					String with = "With " + affects;
+					String without = "Without " + affects;
 					while (affectWithRS.next() && affectWithoutRS.next()) {
 					%>
 					<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -312,8 +309,8 @@
 				    function drawBasic() {
 						var data = google.visualization.arrayToDataTable([
 				            ["<% out.print(fullname); %>", 'Analytics',],
-				            ["With Interactions", <%= affectWithRS.getInt(1)%>],
-				            ["Without Interactions",  <%= affectWithoutRS.getInt(1)%>],
+				            ["<% out.print(with); %>", <%= affectWithRS.getInt(1)%>],
+				            ["<% out.print(without); %>",  <%= affectWithoutRS.getInt(1)%>],
 				          ]);
 
 				          var options = {

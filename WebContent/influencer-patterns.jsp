@@ -132,7 +132,7 @@
 					<p style="font-size:12px">Influencer posts were entered into the database on 2018-04-08.</p>
 					<table style="margin-left:auto; margin-right:auto;">
 					<tr>
-						<th style="font-size:15px; padding:5px">Posted Before</th>
+						<th style="font-size:15px; padding:5px">Posted After</th>
 						<th style="font-size:15px; padding:5px">Average Interactions</th>
 					</tr>
 					
