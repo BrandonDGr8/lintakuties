@@ -63,7 +63,6 @@
 			        	 }
 					timeOfDayRS.beforeFirst();
 			   		%> 
-			   		</table>
 			        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     				<script type="text/javascript">
     						
@@ -104,12 +103,9 @@
 
     				      // Create the data table.
     				      var data = new google.visualization.DataTable();
-    				      data.addColumn('string', 'Topping');
-    				      data.addColumn('number', 'Slices');
-    				      data.addRows([
-    				        [timelist[timelist.length-1], 3],
-    				        ['Onions', 1]
-    				      ]);
+    				      data.addColumn('string', 'Time of Day');
+    				      data.addColumn('number', 'Number of Interactions');
+
     				      for(var i = 0; i<timelist.length;i++){
     				    	  data.addRow(
     				    		  [timelist[i],parseInt(numlist[i])]
@@ -121,8 +117,9 @@
     				                     'height':300};
 
     				      // Instantiate and draw our chart, passing in some options.
-    				      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-    				      chart.draw(data, options);
+    				      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+
+				          chart.draw(data, options);
     				    }
 					</script>
 					<center>
